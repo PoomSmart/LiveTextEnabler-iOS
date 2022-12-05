@@ -9,6 +9,14 @@
 
 %end
 
+%hook CAMCaptureCapabilities
+
+- (BOOL)isImageAnalysisSupported {
+    return YES;
+}
+
+%end
+
 %group Preferences
 
 BOOL override = NO;
