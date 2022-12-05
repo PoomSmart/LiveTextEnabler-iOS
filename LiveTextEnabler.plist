@@ -1,0 +1,1 @@
+{ Filter = { Bundles = ( "com.apple.VisionKitCore", "com.apple.camera", "com.apple.Preferences" ); }; }

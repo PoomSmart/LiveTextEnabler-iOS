@@ -1,0 +1,11 @@
+Package: com.ps.livetextenabler
+Name: Live Text Enabler
+Version: 1.1.0
+Architecture: iphoneos-arm
+Description: Enable Live Text on unsupported iOS 15 devices
+Maintainer: PoomSmart
+Author: PoomSmart
+Section: Tweaks
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 15.0)
+Depiction: https://poomsmart.github.io/repo/depictions/livetextenabler.html
+SileoDepiction: https://poomsmart.github.io/repo/sileodepictions/livetextenabler.json
