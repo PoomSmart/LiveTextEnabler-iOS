@@ -2,7 +2,7 @@ Package: com.ps.livetextenabler
 Name: Live Text Enabler
 Version: 1.1.1
 Architecture: iphoneos-arm
-Description: Enable Live Text on unsupported iOS 15 devices
+Description: Enable Live Text on unsupported iOS 15+ devices
 Maintainer: PoomSmart
 Author: PoomSmart
 Section: Tweaks

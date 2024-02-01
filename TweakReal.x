@@ -1,5 +1,5 @@
 #import <MobileGestalt/MobileGestalt.h>
-#import "../PSHeader/Misc.h"
+#import <PSHeader/Misc.h>
 
 %hook VKImageAnalyzer
 
