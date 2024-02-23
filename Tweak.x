@@ -23,7 +23,7 @@
 
 %end
 
-extern void CameraHook() {
+static void CameraHook() {
     %init(Camera);
 }
 
@@ -40,24 +40,17 @@ void (*vk_deviceSupportsImageAnalysis_block_invoke)(void) = NULL;
 
 %end
 
-%group Preferences
-
-BOOL override = NO;
+%group MobileGestalt
 
 %hookf(bool, MGGetBoolAnswer, CFStringRef question) {
-    return override && CFStringEqual(question, CFSTR("+N9mZUAHooNvMiQnjeTJ8g")) ? true : %orig;
-}
-
-%hook InternationalSettingsController
-
-- (id)specifiers {
-    override = YES;
-    id r = %orig;
-    override = NO;
-    return r;
+    return CFStringEqual(question, CFSTR("+N9mZUAHooNvMiQnjeTJ8g")) ? true : %orig;
 }
 
 %end
+
+static void MobileGestaltHook() {
+    %init(MobileGestalt);
+}
 
 char *bundleLoadedObserver = "LTE";
 void InternationalSettingsBundleLoadedNotificationFired(CFNotificationCenterRef center, void *observer, CFStringRef name, const void *object, CFDictionaryRef userInfo) {
@@ -65,7 +58,7 @@ void InternationalSettingsBundleLoadedNotificationFired(CFNotificationCenterRef 
         return;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        %init(Preferences);
+        MobileGestaltHook();
         CFNotificationCenterRemoveObserver(CFNotificationCenterGetLocalCenter(), bundleLoadedObserver, (__bridge CFStringRef)NSBundleDidLoadNotification, NULL);
     });
 }
@@ -79,11 +72,13 @@ void CameraSettingsBundleLoadedNotificationFired(CFNotificationCenterRef center,
     });
 }
 
-%end
+FOUNDATION_EXPORT char ***_NSGetArgv();
 
 %ctor {
     %init;
-    NSString *processName = [[NSProcessInfo processInfo] processName];
+    char *executablePathC = **_NSGetArgv();
+    NSString *executablePath = [NSString stringWithUTF8String:executablePathC];
+    NSString *processName = [executablePath lastPathComponent];
     if ([processName isEqualToString:@"Camera"]) {
         CameraHook();
     }
@@ -94,7 +89,10 @@ void CameraSettingsBundleLoadedNotificationFired(CFNotificationCenterRef center,
     if (vk_deviceSupportsImageAnalysis_block_invoke) {
         %init(VisionKitCore);
     }
-    if (![[NSBundle mainBundle].bundleIdentifier isEqualToString:@"com.apple.Preferences"]) return;
+    if (![[NSBundle mainBundle].bundleIdentifier isEqualToString:@"com.apple.Preferences"]) {
+        MobileGestaltHook();
+        return;
+    };
     @autoreleasepool {
         CFNotificationCenterAddObserver(
             CFNotificationCenterGetLocalCenter(),
